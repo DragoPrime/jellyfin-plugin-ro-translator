@@ -1,0 +1,12 @@
+[
+  {
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Romanian Metadata Translator",
+    "description": "Traduce automat metadatele bibliotecii Jellyfin in limba romana folosind DeepL API.",
+    "overview": "Traducere automata in romana cu DeepL. Protectie impotriva refresh-ului TMDB.",
+    "owner": "DragoPrime",
+    "category": "Metadata",
+    "imageUrl": "",
+    "versions": []
+  }
+]
