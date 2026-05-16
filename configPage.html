@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8" />
+    <title>Romanian Metadata Translator</title>
+</head>
+<body>
+    <div id="RoTranslatorConfigPage" data-role="page" class="page type-interior pluginConfigurationPage"
+         data-require="emby-input,emby-button,emby-select,emby-checkbox">
+
+        <div data-role="content">
+            <div class="content-primary">
+
+                <form id="RoTranslatorConfigForm">
+
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">🇷🇴 Romanian Metadata Translator</h2>
+                    </div>
+                    <p>
+                        Traduce automat metadatele bibliotecii în română folosind <strong>DeepL API</strong>.
+                        Câmpurile traduse sunt <strong>blocate automat</strong> — refresh-ul TMDB din 30 în 30 de zile
+                        nu va suprascrie traducerile.
+                    </p>
+
+                    <br/>
+                    <h3>Autentificare DeepL</h3>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="deepLApiKey">DeepL API Key *</label>
+                        <input id="deepLApiKey" name="DeepLApiKey" type="password" class="emby-input" required />
+                        <div class="fieldDescription">
+                            Obține cheia gratuită de pe <a href="https://www.deepl.com/pro-api" target="_blank">deepl.com/pro-api</a>.
+                            Planul <strong>Free</strong> = 500.000 caractere/lună (suficient pentru ~1000 filme).
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="useProApi" name="UseProApi" type="checkbox" is="emby-checkbox" />
+                            <span>Folosește API-ul DeepL Pro</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Debifat = endpoint Free (api-free.deepl.com). Bifat = endpoint Pro (api.deepl.com).
+                        </div>
+                    </div>
+
+                    <br/>
+                    <h3>Ce se traduce prin DeepL</h3>
+                    <p style="font-size:0.85em;opacity:0.75;">Aceste câmpuri consumă din cota API. Traducerile sunt blocate automat după prima rulare.</p>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="translateOverview" name="TranslateOverview" type="checkbox" is="emby-checkbox" />
+                            <span>Traduce descrierea (Overview)</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Sinopsisul filmelor, serialelor, sezoanelor și episoadelor.
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="translateTagline" name="TranslateTagline" type="checkbox" is="emby-checkbox" />
+                            <span>Traduce tagline-ul</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Sloganul/tagline-ul filmelor.
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="translateTitle" name="TranslateTitle" type="checkbox" is="emby-checkbox" />
+                            <span>Traduce titlul</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            ⚠️ Nerecomandat pentru anime — titlul original se păstrează în câmpul "Original Title".
+                        </div>
+                    </div>
+
+                    <br/>
+                    <h3>Ce se traduce fără consum API</h3>
+                    <p style="font-size:0.85em;opacity:0.75;">Aceste câmpuri folosesc un dicționar intern și nu consumă din cota DeepL.</p>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="translateGenres" name="TranslateGenres" type="checkbox" is="emby-checkbox" />
+                            <span>Traduce genurile</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Ex: "Action" → "Acțiune", "Comedy" → "Comedie", "Sci-Fi" → "SF" etc.
+                        </div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="translateTags" name="TranslateTags" type="checkbox" is="emby-checkbox" />
+                            <span>Traduce etichetele (Tags)</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Ex: "Time Travel" → "Călătorie în timp", "Martial Arts" → "Arte marțiale" etc.
+                        </div>
+                    </div>
+
+                    <br/>
+                    <h3>Comportament</h3>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="overwriteExisting" name="OverwriteExisting" type="checkbox" is="emby-checkbox" />
+                            <span>Suprascrie câmpurile deja blocate</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            ⚠️ Forțează re-traducerea tuturor câmpurilor, chiar dacă sunt deja blocate.
+                            Folosește doar dacă vrei să reiei traducerea de la zero.
+                        </div>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="requestsPerMinute">Cereri DeepL API per minut</label>
+                        <input id="requestsPerMinute" name="RequestsPerMinute" type="number" min="1" max="100" class="emby-input" />
+                        <div class="fieldDescription">
+                            Implicit: 30. Nu depăși limita planului tău DeepL.
+                        </div>
+                    </div>
+
+                    <br/>
+                    <div style="background:rgba(255,200,0,0.08);border-left:3px solid #fc0;padding:12px 16px;border-radius:4px;margin-bottom:16px;">
+                        <strong>ℹ️ Cum funcționează protecția la refresh:</strong><br/>
+                        După traducere, plugin-ul setează câmpurile ca <em>blocate</em> direct în baza de date Jellyfin
+                        (<code>LockedFields</code>). Jellyfinul built-in respectă aceste lock-uri și nu va suprascrie
+                        câmpurile blocate la refresh-ul automat TMDB. Pentru a reseta, folosește task-ul
+                        <em>"Resetează lock-urile de traducere"</em> din Scheduled Tasks.
+                    </div>
+
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block">
+                            <span>Salvează</span>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var RoTranslatorConfig = {
+                pluginId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+
+                loadConfig: function () {
+                    ApiClient.getPluginConfiguration(RoTranslatorConfig.pluginId).then(function (config) {
+                        document.getElementById("deepLApiKey").value       = config.DeepLApiKey || "";
+                        document.getElementById("useProApi").checked        = config.UseProApi || false;
+                        document.getElementById("translateOverview").checked = config.TranslateOverview !== false;
+                        document.getElementById("translateTagline").checked  = config.TranslateTagline !== false;
+                        document.getElementById("translateTitle").checked    = config.TranslateTitle || false;
+                        document.getElementById("translateGenres").checked   = config.TranslateGenres !== false;
+                        document.getElementById("translateTags").checked     = config.TranslateTags !== false;
+                        document.getElementById("overwriteExisting").checked = config.OverwriteExisting || false;
+                        document.getElementById("requestsPerMinute").value   = config.RequestsPerMinute || 30;
+                    });
+                },
+
+                saveConfig: function (e) {
+                    e.preventDefault();
+                    ApiClient.getPluginConfiguration(RoTranslatorConfig.pluginId).then(function (config) {
+                        config.DeepLApiKey       = document.getElementById("deepLApiKey").value;
+                        config.UseProApi          = document.getElementById("useProApi").checked;
+                        config.TranslateOverview  = document.getElementById("translateOverview").checked;
+                        config.TranslateTagline   = document.getElementById("translateTagline").checked;
+                        config.TranslateTitle     = document.getElementById("translateTitle").checked;
+                        config.TranslateGenres    = document.getElementById("translateGenres").checked;
+                        config.TranslateTags      = document.getElementById("translateTags").checked;
+                        config.OverwriteExisting  = document.getElementById("overwriteExisting").checked;
+                        config.RequestsPerMinute  = parseInt(document.getElementById("requestsPerMinute").value) || 30;
+
+                        ApiClient.updatePluginConfiguration(RoTranslatorConfig.pluginId, config).then(function () {
+                            Dashboard.processPluginConfigurationUpdateResult();
+                        });
+                    });
+                }
+            };
+
+            document.getElementById("RoTranslatorConfigForm")
+                .addEventListener("submit", RoTranslatorConfig.saveConfig);
+
+            RoTranslatorConfig.loadConfig();
+        </script>
+
+    </div>
+</body>
+</html>
