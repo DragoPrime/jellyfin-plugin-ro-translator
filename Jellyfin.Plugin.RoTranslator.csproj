@@ -1,20 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>Jellyfin.Plugin.RoTranslator</AssemblyName>
     <RootNamespace>Jellyfin.Plugin.RoTranslator</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Nullable>enable</Nullable>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.1.0</Version>
   </PropertyGroup>
 
   <!-- Referinte la Jellyfin SDK (nu sunt incluse in build, sunt furnizate de server) -->
   <ItemGroup>
-    <PackageReference Include="Jellyfin.Controller" Version="10.9.*" />
-    <PackageReference Include="Jellyfin.Model" Version="10.9.*" />
+    <PackageReference Include="Jellyfin.Controller" Version="10.11.*" />
+    <PackageReference Include="Jellyfin.Model" Version="10.11.*" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.*" />
   </ItemGroup>
 

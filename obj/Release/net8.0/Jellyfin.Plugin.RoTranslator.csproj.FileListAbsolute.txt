@@ -1,0 +1,6 @@
+C:\Users\Dragos-Stefan Simion\Desktop\RoTranslator\obj\Release\net8.0\Jellyfin.Plugin.RoTranslator.csproj.AssemblyReference.cache
+C:\Users\Dragos-Stefan Simion\Desktop\RoTranslator\obj\Release\net8.0\Jellyfin.Plugin.RoTranslator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Dragos-Stefan Simion\Desktop\RoTranslator\obj\Release\net8.0\Jellyfin.Plugin.RoTranslator.AssemblyInfoInputs.cache
+C:\Users\Dragos-Stefan Simion\Desktop\RoTranslator\obj\Release\net8.0\Jellyfin.Plugin.RoTranslator.AssemblyInfo.cs
+C:\Users\Dragos-Stefan Simion\Desktop\RoTranslator\obj\Release\net8.0\Jellyfin.Plugin.RoTranslator.csproj.CoreCompileInputs.cache
+C:\Users\Dragos-Stefan Simion\Desktop\RoTranslator\obj\Release\net8.0\Jellyfin.Plugin.RoTranslator.sourcelink.json

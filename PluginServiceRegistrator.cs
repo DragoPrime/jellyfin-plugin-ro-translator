@@ -1,7 +1,9 @@
 using Jellyfin.Plugin.RoTranslator.Services;
 using Jellyfin.Plugin.RoTranslator.Tasks;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Controller;
+using MediaBrowser.Controller.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Jellyfin.Plugin.RoTranslator

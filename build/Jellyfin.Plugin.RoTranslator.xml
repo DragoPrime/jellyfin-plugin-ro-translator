@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Jellyfin.Plugin.RoTranslator</name>
+    </assembly>
+    <members>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.DeepLApiKey">
+            <summary>Cheia API DeepL (free sau pro).</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.UseProApi">
+            <summary>Foloseste endpoint-ul DeepL Pro (true) sau Free (false).</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.TranslateTitle">
+            <summary>Traduce titlul itemului.</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.TranslateOverview">
+            <summary>Traduce descrierea/overview.</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.TranslateTagline">
+            <summary>Traduce tagline-ul filmelor.</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.TranslateGenres">
+            <summary>Traduce genurile folosind dictionarul intern (fara apel API).</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.TranslateTags">
+            <summary>Traduce etichetele/tags folosind dictionarul intern (fara apel API).</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.OverwriteExisting">
+            <summary>
+            Suprascrie chiar daca campul e deja blocat/tradus.
+            ATENTIE: va retraduce tot de la zero.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.RoTranslator.Configuration.PluginConfiguration.RequestsPerMinute">
+            <summary>Numarul maxim de cereri DeepL API per minut.</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.RoTranslator.Providers.RoMovieMetadataProvider">
+            <summary>
+            Provider pentru filme - ruleaza dupa TMDB si aplica traducerea + lock.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.RoTranslator.Services.GenreTagDictionary">
+            <summary>
+            Dictionare statice pentru genuri si etichete comune din TMDB.
+            Traducere rapida fara apel API pentru termeni standard.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.RoTranslator.Services.GenreTagDictionary.TranslateGenre(System.String)">
+            <summary>
+            Incearca sa traducă un gen. Returneaza genul original daca nu e in dictionar.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.RoTranslator.Services.GenreTagDictionary.TranslateTag(System.String)">
+            <summary>
+            Incearca sa traducă o eticheta. Returneaza eticheta originala daca nu e in dictionar.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.RoTranslator.Services.TranslationLockService">
+            <summary>
+            Tine evidenta itemelor deja traduse pentru a preveni suprascrierea la refresh.
+            Persista datele pe disc in fisierul translated_items.json.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.RoTranslator.Services.TranslationLockService.MarkTranslated(System.Guid,System.String)">
+            <summary>
+            Marcheaza un camp al unui item ca tradus si blocat.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.RoTranslator.Services.TranslationLockService.IsLocked(System.Guid,System.String)">
+            <summary>
+            Verifica daca un camp al unui item este blocat (deja tradus).
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.RoTranslator.Services.TranslationLockService.ClearLocks(System.Guid)">
+            <summary>
+            Elimina lock-urile unui item (pentru a permite re-traducerea).
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.RoTranslator.Services.TranslationLockService.GetAllLocks">
+            <summary>
+            Returneaza toti itemii cu campuri blocate (pentru UI/debug).
+            </summary>
+        </member>
+    </members>
+</doc>

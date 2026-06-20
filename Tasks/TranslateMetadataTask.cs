@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.RoTranslator.Services;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -14,10 +15,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.RoTranslator.Tasks
 {
-    /// <summary>
-    /// Task principal: traduce metadatele si le blocheaza impotriva refresh-ului TMDB.
-    /// Ruleaza dupa orice refresh de biblioteca sau manual.
-    /// </summary>
     public class TranslateMetadataTask : IScheduledTask
     {
         private readonly ILibraryManager _libraryManager;
@@ -44,14 +41,7 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
 
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()
         {
-            return new[]
-            {
-                new TaskTriggerInfo
-                {
-                    Type = TaskTriggerInfo.TriggerDaily,
-                    TimeOfDayTicks = TimeSpan.FromHours(3).Ticks
-                }
-            };
+            return Array.Empty<TaskTriggerInfo>();
         }
 
         public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
@@ -68,10 +58,10 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
             {
                 IncludeItemTypes = new[]
                 {
-                    typeof(Movie).FullName!,
-                    typeof(Series).FullName!,
-                    typeof(Season).FullName!,
-                    typeof(Episode).FullName!
+                    BaseItemKind.Movie,
+                    BaseItemKind.Series,
+                    BaseItemKind.Season,
+                    BaseItemKind.Episode
                 },
                 IsVirtualItem = false,
                 Recursive = true
@@ -96,7 +86,7 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
 
                 try
                 {
-                    bool changed = await ProcessItemAsync(item, config, cancellationToken);
+                    bool changed = await ProcessItemAsync(item, config, cancellationToken).ConfigureAwait(false);
                     if (changed) translated++;
                     else skipped++;
                 }
@@ -108,10 +98,9 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
                 }
 
                 processed++;
-                progress.Report((double)processed / total * 100);
+                progress?.Report((double)processed / total * 100);
             }
 
-            // Salveaza lock-urile pe disc dupa procesare completa
             _lockService.Save();
 
             _logger.LogInformation(
@@ -123,7 +112,6 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
         {
             bool changed = false;
 
-            // --- Colecteaza textele de tradus prin DeepL (batch API) ---
             var batch = new List<(string Field, string Text)>();
 
             if (config.TranslateOverview && !string.IsNullOrWhiteSpace(item.Overview))
@@ -144,7 +132,6 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
                     batch.Add(("Name", item.Name));
             }
 
-            // --- Traducere batch prin DeepL ---
             if (batch.Count > 0)
             {
                 var texts = batch.Select(b => b.Text).ToList();
@@ -170,7 +157,7 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
                         case "Tagline":
                             ((Movie)item).Tagline = translatedText;
                             _lockService.MarkTranslated(item.Id, "Tagline");
-                            item.LockedFields = AddLockedField(item.LockedFields, MetadataField.TagLines);
+                            // Tagline nu are camp dedicat in MetadataField in 10.11, folosim Overview lock separat prin lockService
                             changed = true;
                             break;
 
@@ -186,7 +173,6 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
                 }
             }
 
-            // --- Genuri (dictionar static, fara apel API) ---
             if (config.TranslateGenres && item.Genres != null && item.Genres.Length > 0)
             {
                 if (!_lockService.IsLocked(item.Id, "Genres") || config.OverwriteExisting)
@@ -202,7 +188,6 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
                 }
             }
 
-            // --- Etichete/Tags (dictionar static, fara apel API) ---
             if (config.TranslateTags && item.Tags != null && item.Tags.Length > 0)
             {
                 if (!_lockService.IsLocked(item.Id, "Tags") || config.OverwriteExisting)
@@ -230,10 +215,6 @@ namespace Jellyfin.Plugin.RoTranslator.Tasks
             return changed;
         }
 
-        /// <summary>
-        /// Adauga un MetadataField la array-ul LockedFields fara duplicate.
-        /// Campurile blocate NU vor fi suprascrise de TMDB la urmatorul refresh.
-        /// </summary>
         private static MetadataField[] AddLockedField(MetadataField[]? existing, MetadataField field)
         {
             if (existing == null) return new[] { field };
